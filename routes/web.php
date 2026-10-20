@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\ClaimController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', fn () => to_route('claims.index'));
+
+Route::resource('claims', ClaimController::class)->except('destroy');

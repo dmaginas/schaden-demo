@@ -27,6 +27,21 @@ enum ClaimType: string
     }
 
     /**
+     * Get the Tailwind classes for the claim type badge.
+     */
+    public function badgeClasses(): string
+    {
+        return match ($this) {
+            self::Leitungswasser => 'bg-blue-100 text-blue-800',
+            self::Feuer => 'bg-red-100 text-red-800',
+            self::SturmHagel => 'bg-slate-200 text-slate-800',
+            self::Elementar => 'bg-teal-100 text-teal-800',
+            self::Glas => 'bg-cyan-100 text-cyan-800',
+            self::Sonstiges => 'bg-stone-200 text-stone-700',
+        };
+    }
+
+    /**
      * Get the trade that usually handles this type of claim.
      */
     public function suggestedTrade(): Trade

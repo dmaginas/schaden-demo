@@ -25,6 +25,20 @@ enum ClaimStatus: string
     }
 
     /**
+     * Get the Tailwind classes for the status badge.
+     */
+    public function badgeClasses(): string
+    {
+        return match ($this) {
+            self::Gemeldet => 'bg-sky-100 text-sky-800',
+            self::InPruefung => 'bg-amber-100 text-amber-800',
+            self::HandwerkerBeauftragt => 'bg-violet-100 text-violet-800',
+            self::Reguliert => 'bg-emerald-100 text-emerald-800',
+            self::Abgeschlossen => 'bg-gray-200 text-gray-700',
+        };
+    }
+
+    /**
      * Determine whether a contractor is assigned at this stage.
      */
     public function hasContractor(): bool

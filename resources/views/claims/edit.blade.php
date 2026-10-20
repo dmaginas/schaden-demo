@@ -5,6 +5,16 @@
 @section('content')
     <h1 class="text-2xl font-semibold">Meldung #{{ $claim->id }} bearbeiten</h1>
 
+    @error('claim')
+        <div class="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{{ $message }}</div>
+    @else
+        @if ($claim->status === App\Enums\ClaimStatus::Abgeschlossen)
+            <div class="rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800" role="status">
+                Diese Meldung ist abgeschlossen. Änderungen können nicht mehr gespeichert werden.
+            </div>
+        @endif
+    @enderror
+
     <form method="POST" action="{{ route('claims.update', $claim) }}" class="flex flex-col gap-6 rounded-lg border border-gray-200 bg-white p-6">
         @csrf
         @method('PUT')

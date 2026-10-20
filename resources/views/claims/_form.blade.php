@@ -35,7 +35,7 @@
 
     <label class="flex flex-col gap-1">
         <span class="text-sm font-medium text-gray-700">Schadendatum</span>
-        <input type="date" name="occurred_on" value="{{ old('occurred_on', $claim->occurred_on?->format('Y-m-d')) }}" class="{{ $inputClasses }}">
+        <input type="date" name="occurred_on" max="{{ today()->toDateString() }}" value="{{ old('occurred_on', $claim->occurred_on?->format('Y-m-d')) }}" class="{{ $inputClasses }}">
         @error('occurred_on') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
     </label>
 

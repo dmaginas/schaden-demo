@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Enums\ClaimStatus;
 use App\Enums\ClaimType;
+use App\Http\Requests\StoreClaimRequest;
+use App\Http\Requests\UpdateClaimRequest;
 use App\Models\Claim;
 use App\Models\Contractor;
 use App\Models\Property;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class ClaimController extends Controller
@@ -51,11 +52,9 @@ class ClaimController extends Controller
     /**
      * Store a newly created claim.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreClaimRequest $request): RedirectResponse
     {
-        $validated = $request->validate($this->rules());
-
-        $claim = new Claim($validated);
+        $claim = new Claim($request->validated());
         $claim->status = ClaimStatus::Gemeldet;
         $claim->save();
 
@@ -96,36 +95,13 @@ class ClaimController extends Controller
     /**
      * Update the specified claim.
      */
-    public function update(Request $request, Claim $claim): RedirectResponse
+    public function update(UpdateClaimRequest $request, Claim $claim): RedirectResponse
     {
-        $validated = $request->validate([
-            ...$this->rules(),
-            'status' => ['required', Rule::enum(ClaimStatus::class)],
-            'contractor_id' => ['nullable', 'exists:contractors,id'],
-        ]);
-
-        $claim->fill($validated);
-        $claim->status = $request->enum('status', ClaimStatus::class);
+        $claim->fill($request->validated());
+        $claim->status = ClaimStatus::from($request->validated('status'));
         $claim->save();
 
         return to_route('claims.show', $claim)
             ->with('success', 'Schadenmeldung wurde aktualisiert.');
-    }
-
-    /**
-     * Get the validation rules shared by store and update.
-     *
-     * @return array<string, array<int, mixed>>
-     */
-    private function rules(): array
-    {
-        return [
-            'property_id' => ['required', 'exists:properties,id'],
-            'reported_by' => ['required'],
-            'type' => ['required', Rule::enum(ClaimType::class)],
-            'occurred_on' => ['required'],
-            'description' => ['required'],
-            'estimated_cost' => ['nullable'],
-        ];
     }
 }

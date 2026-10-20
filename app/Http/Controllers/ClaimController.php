@@ -25,8 +25,7 @@ class ClaimController extends Controller
 
         $claims = Claim::query()
             ->with(['property', 'contractor'])
-            ->when($status, fn ($query, ClaimStatus $status) => $query->where('status', $status))
-            ->when($type, fn ($query, ClaimType $type) => $query->where('type', $type))
+            ->filter($status, $type)
             ->latest('occurred_on')
             ->paginate(15)
             ->withQueryString();

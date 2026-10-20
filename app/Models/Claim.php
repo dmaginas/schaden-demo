@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Enums\ClaimStatus;
 use App\Enums\ClaimType;
 use Database\Factories\ClaimFactory;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -54,6 +56,19 @@ class Claim extends Model
             'occurred_on' => 'date',
             'estimated_cost' => 'decimal:2',
         ];
+    }
+
+    /**
+     * Filter claims by status and type, ignoring filters that are not set.
+     *
+     * @param  Builder<Claim>  $query
+     */
+    #[Scope]
+    protected function filter(Builder $query, ?ClaimStatus $status, ?ClaimType $type): void
+    {
+        $query
+            ->when($status, fn (Builder $query, ClaimStatus $status) => $query->where('status', $status))
+            ->when($type, fn (Builder $query, ClaimType $type) => $query->where('type', $type));
     }
 
     /**
